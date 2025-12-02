@@ -19,16 +19,23 @@ export default withDB(async function handler(req, res) {
     const members = req.db.collection("members");
 
     const totalMembers = await members.countDocuments({});
+    const activeMembers = await members.countDocuments({ isActive: true,});
+    const inActiveMembers = await members.countDocuments({ isActive: false,});
     const dueToday = await members.countDocuments({
-      renewalDate: { $gte: todayStart, $lte: todayEnd },
+       isActive: true,
+      renewalDate: {  $gte: todayStart, $lte: todayEnd },
     });
     const dueTomorrow = await members.countDocuments({
-      renewalDate: { $gte: tomorrowStart, $lte: tomorrowEnd },
+       isActive: true,
+      renewalDate: {  $gte: tomorrowStart, $lte: tomorrowEnd },
     });
     const dueDayAfterTomorrow = await members.countDocuments({
+       isActive: true,
       renewalDate: { $gte: day2Start, $lte: day2End },
     });
     const overdue = await members.countDocuments({
+      isActive: true,
+
       renewalDate: { $lt: todayStart },
       paymentStatus: "unpaid",
     });

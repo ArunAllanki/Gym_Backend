@@ -23,17 +23,21 @@ export default withDB(async function handler(req, res) {
       .toArray();
 
     const dueTomorrow = await members
-      .find({ renewalDate: { $gte: tomorrowStart, $lte: tomorrowEnd } })
+      .find({
+        isActive: true,
+        renewalDate: { $gte: tomorrowStart, $lte: tomorrowEnd },
+      })
       .sort({ renewalDate: 1 })
       .toArray();
 
     const dueDayAfterTomorrow = await members
-      .find({ renewalDate: { $gte: day2Start, $lte: day2End } })
+      .find({ isActive: true, renewalDate: { $gte: day2Start, $lte: day2End } })
       .sort({ renewalDate: 1 })
       .toArray();
 
     const overdue = await members
       .find({
+        isActive: true,
         renewalDate: { $lt: todayStart },
         paymentStatus: "unpaid",
       })
